@@ -32,6 +32,7 @@ android {
     buildFeatures {
         viewBinding = true
         compose = false
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

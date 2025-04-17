@@ -3,7 +3,7 @@ package ru.kolsanovafit.workouts.ui.list_workouts.adapter
 import androidx.recyclerview.widget.DiffUtil
 import ru.kolsanovafit.workouts.domain.entity.Workout
 
-class WorkoutCallback(
+class WorkoutDiffUtilCallback(
     private val oldList: List<Workout>,
     private val newList: List<Workout>
 ) : DiffUtil.Callback() {

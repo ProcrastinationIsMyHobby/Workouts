@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.kolsanovafit.workouts.databinding.ItemWorkoutBinding
 import ru.kolsanovafit.workouts.domain.entity.Workout
 
-class WorkoutAdapter(
+class WorkoutItemAdapter(
     private val onItemClick: (Workout) -> Unit
-) : RecyclerView.Adapter<WorkoutViewHolder>(), Filterable {
+) : RecyclerView.Adapter<WorkoutItemViewHolder>(), Filterable {
 
     var fullWorkoutList: List<Workout> = emptyList()
         set(value) {
@@ -55,20 +55,20 @@ class WorkoutAdapter(
     }
 
     private fun updateList(newList: List<Workout>) {
-        val diffResult = DiffUtil.calculateDiff(WorkoutCallback(workoutList, newList))
+        val diffResult = DiffUtil.calculateDiff(WorkoutDiffUtilCallback(workoutList, newList))
         workoutList = newList
         diffResult.dispatchUpdatesTo(this)
     }
 
     override fun getFilter(): Filter = workoutFilter
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemWorkoutBinding.inflate(inflater, parent, false)
-        return WorkoutViewHolder(binding, onItemClick)
+        return WorkoutItemViewHolder(binding, onItemClick)
     }
 
-    override fun onBindViewHolder(holder: WorkoutViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: WorkoutItemViewHolder, position: Int) {
         holder.bind(workoutList[position])
     }
 

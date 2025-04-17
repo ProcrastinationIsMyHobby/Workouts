@@ -2,7 +2,7 @@ package ru.kolsanovafit.workouts.data.datasource
 
 import kotlinx.coroutines.CancellationException
 import retrofit2.Response
-import ru.kolsanovafit.workouts.domain.entity.LoadState
+import ru.kolsanovafit.workouts.domain.entity.LoadResult
 import java.io.IOException
 
 class RemoteDataSource(private val apiService: ApiService) {
@@ -15,20 +15,20 @@ class RemoteDataSource(private val apiService: ApiService) {
         apiService.getVideo(id)
     }
 
-    private suspend fun <T : Any> safeApiCall(call: suspend () -> Response<T>): LoadState<T> {
+    private suspend fun <T : Any> safeApiCall(call: suspend () -> Response<T>): LoadResult<T> {
         return runCatching { call() }.fold(onSuccess = { response ->
             if (response.isSuccessful) {
                 response.body()?.let {
-                    LoadState.Success(it)
-                } ?: LoadState.Empty
+                    LoadResult.Success(it)
+                } ?: LoadResult.Empty
             } else {
-                LoadState.Error("Ошибка сервера: ${response.code()} ${response.message()}")
+                LoadResult.Error("Ошибка сервера: ${response.code()} ${response.message()}")
             }
         }, onFailure = { throwable ->
             when (throwable) {
                 is CancellationException -> throw throwable
-                is IOException -> LoadState.Error("Ошибка сети, проверьте подключение")
-                else -> LoadState.Error(throwable.message ?: "Неизвестная ошибка")
+                is IOException -> LoadResult.Error("Ошибка сети, проверьте подключение")
+                else -> LoadResult.Error(throwable.message ?: "Неизвестная ошибка")
             }
         })
     }

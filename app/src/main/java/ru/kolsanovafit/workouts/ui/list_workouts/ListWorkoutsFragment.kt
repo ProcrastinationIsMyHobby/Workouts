@@ -13,7 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.kolsanovafit.workouts.R
 import ru.kolsanovafit.workouts.databinding.FragmentListWorkoutsBinding
 import ru.kolsanovafit.workouts.domain.entity.Workout
-import ru.kolsanovafit.workouts.ui.list_workouts.adapter.WorkoutAdapter
+import ru.kolsanovafit.workouts.ui.list_workouts.adapter.WorkoutItemAdapter
 import ru.kolsanovafit.workouts.utils.fragmentLifecycleScope
 
 
@@ -23,7 +23,7 @@ class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
     private lateinit var binding: FragmentListWorkoutsBinding
     private val viewModel: ListWorkoutsViewModel by viewModels<ListWorkoutsViewModel>()
 
-    private val workoutAdapter = WorkoutAdapter() { workout ->
+    private val workoutItemAdapter = WorkoutItemAdapter() { workout ->
         //навигация на второй фрагмент
     }
 
@@ -65,7 +65,7 @@ class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
 
     private fun showWorkouts(workouts: List<Workout>) {
         binding.apply {
-            workoutAdapter.fullWorkoutList = workouts
+            workoutItemAdapter.fullWorkoutList = workouts
             progressBar.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
             //errorLayout.visibility = View.GONE
@@ -77,7 +77,7 @@ class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
     private fun setupRecyclerView() {
         binding.apply {
             recyclerView.apply {
-                adapter = workoutAdapter
+                adapter = workoutItemAdapter
                 layoutManager = LinearLayoutManager(requireContext()).apply {
                     orientation = LinearLayoutManager.VERTICAL
                 }
@@ -102,7 +102,7 @@ class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    workoutAdapter.filter.filter(newText)
+                    workoutItemAdapter.filter.filter(newText)
                     return true
                 }
             })

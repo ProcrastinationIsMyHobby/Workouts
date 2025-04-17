@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.kolsanovafit.workouts.databinding.ItemWorkoutBinding
 import ru.kolsanovafit.workouts.domain.entity.Workout
 
-class WorkoutViewHolder(
+class WorkoutItemViewHolder(
     val binding: ItemWorkoutBinding,
     private val onItemClick: (Workout) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {

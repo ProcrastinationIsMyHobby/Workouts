@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.kolsanovafit.workouts.domain.entity.LoadState
+import ru.kolsanovafit.workouts.domain.entity.LoadResult
 import ru.kolsanovafit.workouts.domain.repo.Repository
 import javax.inject.Inject
 
@@ -26,9 +26,9 @@ class ListWorkoutsViewModel @Inject constructor(
     private fun fetchWorkouts() = viewModelScope.launch(Dispatchers.IO) {
         _state.value = WorkoutUIState.Loading
         when (val result = repo.getWorkouts()) {
-            is LoadState.Success -> _state.value = WorkoutUIState.Success(result.data)
-            is LoadState.Error -> _state.value = WorkoutUIState.Error(result.message)
-            is LoadState.Empty -> _state.value = WorkoutUIState.Empty
+            is LoadResult.Success -> _state.value = WorkoutUIState.Success(result.data)
+            is LoadResult.Error -> _state.value = WorkoutUIState.Error(result.message)
+            is LoadResult.Empty -> _state.value = WorkoutUIState.Empty
             else -> {}
         }
     }
