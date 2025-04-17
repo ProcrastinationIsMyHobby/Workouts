@@ -3,7 +3,7 @@ package ru.kolsanovafit.workouts.data.dto
 import ru.kolsanovafit.workouts.domain.entity.Workout
 import ru.kolsanovafit.workouts.domain.entity.WorkoutType
 
-class WorkoutDTO (
+class WorkoutDTO(
     val id: Int,
     val title: String,
     val description: String?,

@@ -12,14 +12,14 @@ import ru.kolsanovafit.workouts.domain.repo.Repository
 import javax.inject.Inject
 
 @HiltViewModel
-class ListWorkoutsViewModel @Inject constructor (
+class ListWorkoutsViewModel @Inject constructor(
     private val repo: Repository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<WorkoutUIState>(WorkoutUIState.Loading)
     val state = _state.asStateFlow()
 
-    init{
+    init {
         fetchWorkouts()
     }
 

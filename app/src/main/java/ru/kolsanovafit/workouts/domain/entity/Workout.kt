@@ -1,6 +1,6 @@
 package ru.kolsanovafit.workouts.domain.entity
 
-data class Workout (
+data class Workout(
     val id: Int,
     val title: String,
     val description: String,

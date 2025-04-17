@@ -35,9 +35,12 @@ class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
         setupSearchView()
 
         fragmentLifecycleScope(Lifecycle.State.RESUMED) {
-            viewModel.state.collect { state->
+            viewModel.state.collect { state ->
                 when (state) {
-                    WorkoutUIState.Loading -> {showLoading() }
+                    WorkoutUIState.Loading -> {
+                        showLoading()
+                    }
+
                     is WorkoutUIState.Success -> {
                         showWorkouts(state.workouts)
                     }

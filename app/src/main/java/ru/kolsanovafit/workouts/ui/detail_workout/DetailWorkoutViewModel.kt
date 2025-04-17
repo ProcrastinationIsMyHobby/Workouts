@@ -6,7 +6,7 @@ import ru.kolsanovafit.workouts.domain.repo.Repository
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailWorkoutViewModel @Inject constructor (
+class DetailWorkoutViewModel @Inject constructor(
     private val repo: Repository,
 ) : ViewModel() {
 

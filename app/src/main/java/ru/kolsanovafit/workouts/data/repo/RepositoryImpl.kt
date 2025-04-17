@@ -7,7 +7,7 @@ import ru.kolsanovafit.workouts.domain.entity.Workout
 import ru.kolsanovafit.workouts.domain.entity.WorkoutVideo
 import ru.kolsanovafit.workouts.domain.repo.Repository
 
-class RepositoryImpl(private val source: RemoteDataSource): Repository {
+class RepositoryImpl(private val source: RemoteDataSource) : Repository {
 
     override suspend fun getWorkouts(): LoadState<List<Workout>> {
         return source.getWorkouts().map { dtoList -> dtoList.toDomain() }
