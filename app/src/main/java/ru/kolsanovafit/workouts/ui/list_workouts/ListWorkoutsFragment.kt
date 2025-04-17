@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import ru.kolsanovafit.workouts.R
 import ru.kolsanovafit.workouts.databinding.FragmentListWorkoutsBinding
+import ru.kolsanovafit.workouts.domain.entity.NetworkError
 import ru.kolsanovafit.workouts.domain.entity.Workout
 import ru.kolsanovafit.workouts.ui.list_workouts.adapter.WorkoutItemAdapter
 import ru.kolsanovafit.workouts.utils.fragmentLifecycleScope
@@ -47,10 +48,21 @@ class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
 
                     WorkoutUIState.Empty -> {}
                     is WorkoutUIState.Error -> {
-                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), formatErrorMessage(state.error), Toast.LENGTH_LONG).show()
                     }
                 }
             }
+        }
+    }
+
+    private fun formatErrorMessage(error: NetworkError): String {
+        return when (error) {
+            is NetworkError.ServerError ->
+                getString(R.string.server_error, error.code, error.serverMessage)
+            is NetworkError.ConnectionError ->
+                getString(R.string.connection_error)
+            is NetworkError.UnknownError ->
+                getString(R.string.unknown_error)
         }
     }
 

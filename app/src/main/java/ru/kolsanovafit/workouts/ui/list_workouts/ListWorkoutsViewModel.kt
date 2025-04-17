@@ -27,9 +27,8 @@ class ListWorkoutsViewModel @Inject constructor(
         _state.value = WorkoutUIState.Loading
         when (val result = repo.getWorkouts()) {
             is LoadResult.Success -> _state.value = WorkoutUIState.Success(result.data)
-            is LoadResult.Error -> _state.value = WorkoutUIState.Error(result.message)
+            is LoadResult.Error -> _state.value = WorkoutUIState.Error(result.error)
             is LoadResult.Empty -> _state.value = WorkoutUIState.Empty
-            else -> {}
         }
     }
 }

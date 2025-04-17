@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Workouts</string>
+    <string name="server_error">Ошибка сервера: %1$d %2$s</string>
+    <string name="connection_error">Ошибка сети, проверьте подключение</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+</resources>

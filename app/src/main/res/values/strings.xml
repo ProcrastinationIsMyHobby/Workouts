@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Workouts</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="server_error">Server error: %1$d %2$s</string>
+    <string name="connection_error">Connection error, check connection</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>
