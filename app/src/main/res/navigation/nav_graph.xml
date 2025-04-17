@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_detail_workout" >
         <argument
             android:name="id"
-            app:argType="int" />
+            app:argType="integer" />
         <argument
             android:name="title"
             app:argType="string" />

@@ -8,9 +8,9 @@ import ru.kolsanovafit.workouts.data.dto.WorkoutDTO
 
 interface ApiService {
 
-    @GET("get_workouts")
+    @GET("/get_workouts")
     suspend fun getWorkouts(): Response<List<WorkoutDTO>>
 
-    @GET("get_video")
+    @GET("/get_video")
     suspend fun getVideo(@Query("id") id: Int): Response<VideoWorkoutDTO>
 }

@@ -9,12 +9,11 @@ import ru.kolsanovafit.workouts.databinding.FragmentDetailWorkoutBinding
 
 class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
 
-    private lateinit var binding: FragmentDetailWorkoutBinding
-    private val viewModel: DetailWorkoutViewModel by viewModels()
+    private var _binding: FragmentDetailWorkoutBinding? = null
+    private val binding get() = _binding!!
+    private val viewModel: DetailWorkoutViewModel by viewModels<DetailWorkoutViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding = FragmentDetailWorkoutBinding.bind(view)
+        _binding = FragmentDetailWorkoutBinding.bind(view)
     }
-
 }

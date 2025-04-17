@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.kolsanovafit.workouts.BuildConfig
 import java.util.concurrent.TimeUnit
 
-private const val BASE_URL = "https://ref.test.kolsa.ru/"
+private const val BASE_URL = "https://ref.test.kolsa.ru"
 
 class Client {
     val retrofit: Retrofit by lazy {

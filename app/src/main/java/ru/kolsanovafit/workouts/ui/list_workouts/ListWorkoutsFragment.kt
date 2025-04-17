@@ -1,7 +1,9 @@
 package ru.kolsanovafit.workouts.ui.list_workouts
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
@@ -20,11 +22,12 @@ import ru.kolsanovafit.workouts.domain.entity.WorkoutType
 import ru.kolsanovafit.workouts.ui.list_workouts.adapter.WorkoutItemAdapter
 import ru.kolsanovafit.workouts.utils.fragmentLifecycleScope
 
-
 @AndroidEntryPoint
 class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
 
-    private lateinit var binding: FragmentListWorkoutsBinding
+    private var _binding: FragmentListWorkoutsBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel: ListWorkoutsViewModel by viewModels<ListWorkoutsViewModel>()
 
     private val workoutItemAdapter = WorkoutItemAdapter() { workout ->
@@ -37,9 +40,17 @@ class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
         )
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentListWorkoutsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentListWorkoutsBinding.bind(view)
         setupRecyclerView()
         setupSearchView()
         setupFilterButton()
@@ -167,5 +178,10 @@ class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
                 }
             })
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
