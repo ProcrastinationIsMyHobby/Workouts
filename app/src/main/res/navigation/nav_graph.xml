@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/listWorkoutsFragment">
+
+    <fragment
+        android:id="@+id/listWorkoutsFragment"
+        android:name="ru.kolsanovafit.workouts.ui.list_workouts.ListWorkoutsFragment"
+        android:label="fragment_list_workouts"
+        tools:layout="@layout/fragment_list_workouts" >
+        <action
+            android:id="@+id/action_listWorkoutsFragment_to_workoutFragment"
+            app:destination="@id/workoutFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/workoutFragment"
+        android:name="ru.kolsanovafit.workouts.ui.detail_workout.DetailWorkoutFragment"
+        android:label="fragment_workout"
+        tools:layout="@layout/fragment_detail_workout" >
+    </fragment>
+</navigation>
