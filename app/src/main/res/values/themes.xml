@@ -6,4 +6,9 @@
     </style>
 
     <style name="Theme.Workouts" parent="Base.Theme.Workouts" />
+
+    <style name="SearchView.NoUnderline" parent="Widget.Material3.SearchView">
+        <item name="android:queryBackground">@android:color/transparent</item>
+        <item name="queryBackground">@android:color/transparent</item>
+    </style>
 </resources>

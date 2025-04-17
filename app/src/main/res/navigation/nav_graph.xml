@@ -19,5 +19,14 @@
         android:name="ru.kolsanovafit.workouts.ui.detail_workout.DetailWorkoutFragment"
         android:label="fragment_workout"
         tools:layout="@layout/fragment_detail_workout" >
+        <argument
+            android:name="id"
+            app:argType="int" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="description"
+            app:argType="string" />
     </fragment>
 </navigation>

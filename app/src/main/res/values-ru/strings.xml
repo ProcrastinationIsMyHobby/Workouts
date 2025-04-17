@@ -4,4 +4,13 @@
     <string name="server_error">Ошибка сервера: %1$d %2$s</string>
     <string name="connection_error">Ошибка сети, проверьте подключение</string>
     <string name="unknown_error">Неизвестная ошибка</string>
+
+    <string name="filter_all">Все</string>
+    <string name="filter_training">Тренировки</string>
+    <string name="filter_live">Прямые эфиры</string>
+    <string name="filter_complex">Комплексы</string>
+
+    <string name="find_workout">Найти тренировку</string>
+    <string name="empty_layout">Здесь ничего нет…</string>
+    <string name="minutes">%1$s минут</string>
 </resources>

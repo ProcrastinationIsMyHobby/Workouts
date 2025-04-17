@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/filter_all"
+        android:title="@string/filter_all" />
+    <item
+        android:id="@+id/filter_training"
+        android:title="@string/filter_training" />
+    <item
+        android:id="@+id/filter_live"
+        android:title="@string/filter_live" />
+    <item
+        android:id="@+id/filter_complex"
+        android:title="@string/filter_complex" />
+</menu>

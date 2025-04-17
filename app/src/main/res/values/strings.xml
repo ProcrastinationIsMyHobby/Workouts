@@ -3,4 +3,13 @@
     <string name="server_error">Server error: %1$d %2$s</string>
     <string name="connection_error">Connection error, check connection</string>
     <string name="unknown_error">Unknown error</string>
+
+    <string name="filter_all">All</string>
+    <string name="filter_training">Training</string>
+    <string name="filter_live">Live</string>
+    <string name="filter_complex">Complex</string>
+    <string name="find_workout">Find training</string>
+
+    <string name="empty_layout">There\'s nothing here…</string>
+    <string name="minutes">%1$s minutes</string>
 </resources>

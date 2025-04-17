@@ -20,7 +20,7 @@ class RepositoryImpl(private val source: RemoteDataSource) : Repository {
     private fun <T, R> LoadResult<T>.map(transform: (T) -> R): LoadResult<R> {
         return when (this) {
             is LoadResult.Success -> LoadResult.Success(transform(data))
-            is LoadResult.Error -> LoadResult.Error(message)
+            is LoadResult.Error -> LoadResult.Error(error)
             is LoadResult.Empty -> LoadResult.Empty
         }
     }

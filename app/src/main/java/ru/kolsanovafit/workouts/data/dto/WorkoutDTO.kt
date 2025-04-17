@@ -3,11 +3,11 @@ package ru.kolsanovafit.workouts.data.dto
 import ru.kolsanovafit.workouts.domain.entity.Workout
 import ru.kolsanovafit.workouts.domain.entity.WorkoutType
 
-class WorkoutDTO(
+data class WorkoutDTO(
     val id: Int,
     val title: String,
     val description: String?,
-    val type: Int, // 1 - тренировка, 2 - эфир, 3 - комплекс
+    val type: Int,
     val duration: String
 )
 
