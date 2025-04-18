@@ -8,10 +8,10 @@ data class VideoWorkoutDTO(
     val link: String
 )
 
-fun VideoWorkoutDTO.toDomain(): WorkoutVideo {
+fun VideoWorkoutDTO.toDomain(baseUrl: String): WorkoutVideo {
     return WorkoutVideo(
         id = id,
         duration = duration,
-        link = link
+        link = baseUrl + link
     )
 }

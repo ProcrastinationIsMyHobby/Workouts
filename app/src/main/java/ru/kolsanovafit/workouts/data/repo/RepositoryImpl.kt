@@ -1,5 +1,6 @@
 package ru.kolsanovafit.workouts.data.repo
 
+import ru.kolsanovafit.workouts.data.datasource.Client
 import ru.kolsanovafit.workouts.data.datasource.RemoteDataSource
 import ru.kolsanovafit.workouts.data.dto.toDomain
 import ru.kolsanovafit.workouts.domain.entity.LoadResult
@@ -14,7 +15,7 @@ class RepositoryImpl(private val source: RemoteDataSource) : Repository {
     }
 
     override suspend fun getVideoById(id: Int): LoadResult<WorkoutVideo> {
-        return source.getVideo(id).map { it.toDomain() }
+        return source.getVideo(id).map { it.toDomain(Client.BASE_URL) }
     }
 
     private fun <T, R> LoadResult<T>.map(transform: (T) -> R): LoadResult<R> {
