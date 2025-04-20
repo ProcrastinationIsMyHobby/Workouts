@@ -46,34 +46,32 @@ class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
         observeViewModel()
     }
 
-    private fun observeViewModel() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                launch {
-                    viewModel.mediaPlayer.playerState.collect { playerState ->
-                        updateUI(playerState)
-                    }
+    private fun observeViewModel() = viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            launch {
+                viewModel.mediaPlayer.playerState.collect { playerState ->
+                    updateUI(playerState)
                 }
-                launch {
-                    viewModel.state.collect { state ->
-                        when (state) {
-                            is DetailWorkoutLoadState.Loading -> setLoadingState()
-                            is DetailWorkoutLoadState.Success -> {
-                                val link = state.workout.link
-                                pendingLink = link
-                                pendingSurface?.let { surface ->
-                                    viewModel.initializePlayer(link)
-                                    viewModel.mediaPlayer.setVideoSurface(surface)
-                                    pendingLink = null
-                                }
+            }
+            launch {
+                viewModel.state.collect { state ->
+                    when (state) {
+                        is DetailWorkoutLoadState.Loading -> setLoadingState()
+                        is DetailWorkoutLoadState.Success -> {
+                            val link = state.workout.link
+                            pendingLink = link
+                            pendingSurface?.let { surface ->
+                                viewModel.initializePlayer(link)
+                                viewModel.mediaPlayer.setVideoSurface(surface)
+                                pendingLink = null
                             }
-
-                            is DetailWorkoutLoadState.Error ->
-                                setErrorState(formatErrorMessage(state.error))
-
-                            is DetailWorkoutLoadState.Empty ->
-                                setErrorState(getString(R.string.empty_layout))
                         }
+
+                        is DetailWorkoutLoadState.Error ->
+                            setErrorState(formatErrorMessage(state.error))
+
+                        is DetailWorkoutLoadState.Empty ->
+                            setErrorState(getString(R.string.empty_layout))
                     }
                 }
             }
