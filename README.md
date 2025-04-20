@@ -7,7 +7,7 @@
 - Hilt (Dependency Injection)
 - Jetpack Navigation
 - Retrofit
-- XML (в зависимости от UI-фреймворка)
+- XML
 
 ---
 
