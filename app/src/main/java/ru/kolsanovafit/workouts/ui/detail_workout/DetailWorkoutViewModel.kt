@@ -17,10 +17,6 @@ class DetailWorkoutViewModel @Inject constructor(
     private val repo: Repository,
 ) : ViewModel() {
 
-    companion object {
-        const val DEFAULT_VIDEO_URL = "https://ref.test.kolsa.ru/example-02.mp4"
-    }
-
     val mediaPlayer = LifecycleMediaPlayer()
 
     private val _state = MutableStateFlow<DetailWorkoutLoadState>(DetailWorkoutLoadState.Loading)

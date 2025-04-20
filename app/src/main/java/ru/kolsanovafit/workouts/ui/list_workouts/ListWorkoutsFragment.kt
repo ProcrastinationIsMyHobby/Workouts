@@ -10,17 +10,19 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ru.kolsanovafit.workouts.R
 import ru.kolsanovafit.workouts.databinding.FragmentListWorkoutsBinding
-import ru.kolsanovafit.workouts.domain.entity.NetworkError
 import ru.kolsanovafit.workouts.domain.entity.Workout
 import ru.kolsanovafit.workouts.domain.entity.WorkoutType
+import ru.kolsanovafit.workouts.extentions.formatErrorMessage
 import ru.kolsanovafit.workouts.ui.list_workouts.adapter.WorkoutItemAdapter
-import ru.kolsanovafit.workouts.utils.fragmentLifecycleScope
 
 @AndroidEntryPoint
 class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
@@ -80,27 +82,29 @@ class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
         popup.show()
     }
 
-    private fun obverseState() = fragmentLifecycleScope(Lifecycle.State.RESUMED) {
-        viewModel.state.collect { state ->
-            when (state) {
-                WorkoutListLoadState.Loading -> {
-                    showLoading()
-                }
+    private fun obverseState() = viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewModel.state.collect { state ->
+                when (state) {
+                    WorkoutListLoadState.Loading -> {
+                        showLoading()
+                    }
 
-                is WorkoutListLoadState.Success -> {
-                    showWorkouts(state.workouts)
-                }
+                    is WorkoutListLoadState.Success -> {
+                        showWorkouts(state.workouts)
+                    }
 
-                WorkoutListLoadState.Empty -> {
-                    showEmptyTextView()
-                }
+                    WorkoutListLoadState.Empty -> {
+                        showEmptyTextView()
+                    }
 
-                is WorkoutListLoadState.Error -> {
-                    Toast.makeText(
-                        requireContext(),
-                        formatErrorMessage(state.error),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    is WorkoutListLoadState.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            formatErrorMessage(state.error),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             }
         }
@@ -111,19 +115,6 @@ class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
             progressBar.visibility = View.GONE
             recyclerView.visibility = View.GONE
             emptyTextView.visibility = View.VISIBLE
-        }
-    }
-
-    private fun formatErrorMessage(error: NetworkError): String {
-        return when (error) {
-            is NetworkError.ServerError ->
-                getString(R.string.server_error, error.code, error.serverMessage)
-
-            is NetworkError.ConnectionError ->
-                getString(R.string.connection_error)
-
-            is NetworkError.UnknownError ->
-                getString(R.string.unknown_error)
         }
     }
 

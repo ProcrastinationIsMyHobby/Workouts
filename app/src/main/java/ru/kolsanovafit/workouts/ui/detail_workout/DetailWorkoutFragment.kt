@@ -9,13 +9,15 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.kolsanovafit.workouts.R
 import ru.kolsanovafit.workouts.databinding.FragmentDetailWorkoutBinding
+import ru.kolsanovafit.workouts.extentions.formatErrorMessage
 import ru.kolsanovafit.workouts.ui.detail_workout.media_player.PlayerState
-import ru.kolsanovafit.workouts.utils.fragmentLifecycleScope
 
 @AndroidEntryPoint
 class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
@@ -45,46 +47,52 @@ class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
     }
 
     private fun observeViewModel() {
-        fragmentLifecycleScope(Lifecycle.State.RESUMED) {
-            launch {
-                viewModel.mediaPlayer.playerState.collect { playerState ->
-                    updateUI(playerState)
-                }
-            }
-            launch {
-                viewModel.state.collect { state ->
-                    when (state) {
-                        is DetailWorkoutLoadState.Success ->{
-                            val link = state.workout.link
-                            pendingLink = link
-                            pendingSurface?.let { surface ->
-                                viewModel.initializePlayer(link)
-                                viewModel.mediaPlayer.setVideoSurface(surface)
-                                pendingLink = null
-                            }
-                        }
-                        else-> Unit
-
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch {
+                    viewModel.mediaPlayer.playerState.collect { playerState ->
+                        updateUI(playerState)
                     }
+                }
+                launch {
+                    viewModel.state.collect { state ->
+                        when (state) {
+                            is DetailWorkoutLoadState.Loading -> setLoadingState()
+                            is DetailWorkoutLoadState.Success -> {
+                                val link = state.workout.link
+                                pendingLink = link
+                                pendingSurface?.let { surface ->
+                                    viewModel.initializePlayer(link)
+                                    viewModel.mediaPlayer.setVideoSurface(surface)
+                                    pendingLink = null
+                                }
+                            }
 
+                            is DetailWorkoutLoadState.Error ->
+                                setErrorState(formatErrorMessage(state.error))
+
+                            is DetailWorkoutLoadState.Empty ->
+                                setErrorState(getString(R.string.empty_layout))
+                        }
+                    }
                 }
             }
         }
     }
 
-    private fun updateUI(state: PlayerState) = binding.run {
-        val isError = state is PlayerState.Error
-        val isActive = state is PlayerState.Playing
-                || state is PlayerState.Paused
-                || state is PlayerState.Completed
-        val isBuffering = state is PlayerState.Buffering
-                || state is PlayerState.Preparing
+    private fun setLoadingState() = binding.apply {
+        tvError.isVisible = false
+        progressBar.isVisible = true
+    }
 
-        flVideoContainer.isVisible = !isError
-        tvError.isVisible = isError
-        btnPlayPause.isVisible = isActive
-        btnReplay.isVisible = isActive
-        progressBar.isVisible = isBuffering
+    private fun setErrorState(errorStr: String) = binding.apply {
+        progressBar.isVisible = false
+        tvError.isVisible = true
+        tvError.text = errorStr
+    }
+
+    private fun updateUI(state: PlayerState) = binding.run {
+        updateVisibilityForPlayerState(state)
 
         when (state) {
             is PlayerState.Error ->
@@ -99,6 +107,21 @@ class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
 
             else -> Unit
         }
+    }
+
+    private fun updateVisibilityForPlayerState(state: PlayerState) = binding.run {
+        val isError = state is PlayerState.Error
+        val isActive = state is PlayerState.Playing
+                || state is PlayerState.Paused
+                || state is PlayerState.Completed
+        val isBuffering = state is PlayerState.Buffering
+                || state is PlayerState.Preparing
+
+        flVideoContainer.isVisible = !isError
+        tvError.isVisible = isError
+        btnPlayPause.isVisible = isActive
+        btnReplay.isVisible = isActive
+        progressBar.isVisible = isBuffering
     }
 
 
