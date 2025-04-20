@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.Surface
 import android.view.TextureView
 import android.view.View
-import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.kolsanovafit.workouts.R
 import ru.kolsanovafit.workouts.databinding.FragmentDetailWorkoutBinding
+import ru.kolsanovafit.workouts.ui.detail_workout.media_player.PlayerState
 import ru.kolsanovafit.workouts.utils.fragmentLifecycleScope
 
 @AndroidEntryPoint
@@ -27,12 +28,8 @@ class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentDetailWorkoutBinding.bind(view)
-
-        // Инициализируем плеер с прогресс-баром
         viewModel.initializePlayer(binding.progressBar)
-
-        // Добавляем наблюдение за жизненным циклом
-        lifecycle.addObserver(viewModel.mediaPlayer)
+        viewLifecycleOwner.lifecycle.addObserver(viewModel.mediaPlayer)
 
         binding.apply {
             tvTitle.text = args.title
@@ -47,24 +44,39 @@ class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
     private fun observeViewModel() {
         fragmentLifecycleScope(Lifecycle.State.STARTED) {
             launch {
-                viewModel.playPauseIcon.collect { iconRes ->
-                    binding.btnPlayPause.setImageResource(iconRes)
-                }
-            }
-
-            launch {
-                viewModel.showError.collect { error ->
-                    error?.let { (what, extra) ->
-                        Toast.makeText(
-                            requireContext(),
-                            "Error: $what, $extra",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
+                viewModel.mediaPlayer.playerState.collect { playerState ->
+                    updateUI(playerState)
                 }
             }
         }
     }
+
+    private fun updateUI(state: PlayerState) = binding.run {
+        val isError = state is PlayerState.Error
+        val isActive = state is PlayerState.Playing
+                || state is PlayerState.Paused
+                || state is PlayerState.Completed
+
+        flVideoContainer.isVisible = !isError
+        tvError.isVisible = isError
+        btnPlayPause.isVisible = isActive
+        btnReplay.isVisible = isActive
+
+        when (state) {
+            is PlayerState.Error ->
+                tvError.text = getString(R.string.playback_error, state.what.toString())
+
+            is PlayerState.Playing ->
+                btnPlayPause.setImageResource(R.drawable.ic_pause)
+
+            is PlayerState.Paused,
+            is PlayerState.Completed ->
+                btnPlayPause.setImageResource(R.drawable.ic_play)
+
+            else -> Unit
+        }
+    }
+
 
     private fun setupControls() {
         binding.apply {
@@ -85,7 +97,6 @@ class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
             override fun onSurfaceTextureUpdated(st: SurfaceTexture) = Unit
 
             override fun onSurfaceTextureDestroyed(st: SurfaceTexture): Boolean {
-                // Только отсоединяем поверхность, без освобождения плеера
                 viewModel.mediaPlayer.detachSurface()
                 return true
             }
@@ -93,21 +104,7 @@ class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
     }
 
     override fun onDestroyView() {
-        // Отключаем наблюдатель жизненного цикла только если фрагмент действительно уничтожается
-        if (requireActivity().isFinishing) {
-            lifecycle.removeObserver(viewModel.mediaPlayer)
-        }
-
-        // Освобождаем binding
-        _binding = null
         super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        // Только если фрагмент действительно уничтожается, а не пересоздается
-        if (!requireActivity().isChangingConfigurations) {
-            lifecycle.removeObserver(viewModel.mediaPlayer)
-        }
-        super.onDestroy()
+        _binding = null
     }
 }

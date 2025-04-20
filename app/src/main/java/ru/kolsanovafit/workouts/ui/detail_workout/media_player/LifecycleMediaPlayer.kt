@@ -1,6 +1,5 @@
 package ru.kolsanovafit.workouts.ui.detail_workout.media_player
 
-import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.view.Surface
@@ -11,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class LifecycleMediaPlayer(
-    private val context: Context,
     private val videoUri: String,
     private var progressView: View? = null
 ) : DefaultLifecycleObserver {
@@ -62,7 +60,7 @@ class LifecycleMediaPlayer(
                     _playerState.value = PlayerState.Completed
                 }
                 try {
-                    setDataSource(videoUri.toString())
+                    setDataSource(videoUri)
                 } catch (e: Exception) {
                     _playerState.value = PlayerState.Error(-1, 0)
                     e.printStackTrace()
@@ -132,7 +130,6 @@ class LifecycleMediaPlayer(
         }
     }
 
-    // Безопасное отсоединение поверхности без полного освобождения плеера
     fun detachSurface() {
         if (mediaPlayer?.isPlaying == true) {
             wasPlaying = true
@@ -146,13 +143,9 @@ class LifecycleMediaPlayer(
 
     fun releasePlayer() {
         mediaPlayer?.run {
-            try {
-                if (isPlaying) stop()
-                reset()
-                release()
-            } catch (e: Exception) {
-
-            }
+            if (isPlaying) stop()
+            reset()
+            release()
         }
         mediaPlayer = null
         isPrepared = false

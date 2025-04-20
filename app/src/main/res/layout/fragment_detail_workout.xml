@@ -20,6 +20,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Ошибка воспроизведения: -1"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_description"
+        android:visibility="gone"/>
+
     <FrameLayout
         android:id="@+id/fl_video_container"
         android:layout_width="0dp"
@@ -30,7 +46,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_description"
-        app:layout_constraintDimensionRatio="16:9">
+        app:layout_constraintDimensionRatio="16:9"
+        android:visibility="visible">
 
         <TextureView
             android:id="@+id/textureView"
@@ -71,11 +88,10 @@
     <TextView
         android:id="@+id/tv_description"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="250dp"
         android:layout_margin="16dp"
-        android:text="Описание видео. Здесь может быть несколько строк текста, рассказывающих о содержании ролика и важных деталях."
+        android:text="Описание видео"
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/fl_video_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

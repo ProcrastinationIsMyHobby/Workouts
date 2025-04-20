@@ -1,6 +1,7 @@
 package ru.kolsanovafit.workouts.ui.list_workouts.adapter
 
 import androidx.recyclerview.widget.RecyclerView
+import ru.kolsanovafit.workouts.R
 import ru.kolsanovafit.workouts.databinding.ItemWorkoutBinding
 import ru.kolsanovafit.workouts.domain.entity.Workout
 
@@ -13,7 +14,12 @@ class WorkoutItemViewHolder(
         binding.apply {
             textTitle.text = workout.title
             textType.text = workout.type.toString()
-            textDuration.text = workout.duration
+            // Потому что в json вместо минут иногда лежит это значение
+            textDuration.text = if (workout.duration == "workout") {
+                workout.duration
+            } else {
+                binding.root.context.getString(R.string.minutes, workout.duration)
+            }
             textDescription.text = workout.description
 
             root.setOnClickListener {

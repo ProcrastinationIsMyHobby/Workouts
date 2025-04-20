@@ -13,4 +13,6 @@
     <string name="find_workout">Найти тренировку</string>
     <string name="empty_layout">Здесь ничего нет…</string>
     <string name="minutes">%1$s минут</string>
+
+    <string name="playback_error">Ошибка воспроизведения: %1$s</string>
 </resources>
