@@ -83,19 +83,19 @@ class ListWorkoutsFragment : Fragment(R.layout.fragment_list_workouts) {
     private fun obverseState() = fragmentLifecycleScope(Lifecycle.State.RESUMED) {
         viewModel.state.collect { state ->
             when (state) {
-                WorkoutUIState.Loading -> {
+                WorkoutListLoadState.Loading -> {
                     showLoading()
                 }
 
-                is WorkoutUIState.Success -> {
+                is WorkoutListLoadState.Success -> {
                     showWorkouts(state.workouts)
                 }
 
-                WorkoutUIState.Empty -> {
+                WorkoutListLoadState.Empty -> {
                     showEmptyTextView()
                 }
 
-                is WorkoutUIState.Error -> {
+                is WorkoutListLoadState.Error -> {
                     Toast.makeText(
                         requireContext(),
                         formatErrorMessage(state.error),

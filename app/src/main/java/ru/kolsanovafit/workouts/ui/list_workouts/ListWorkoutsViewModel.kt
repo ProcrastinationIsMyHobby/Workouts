@@ -16,7 +16,7 @@ class ListWorkoutsViewModel @Inject constructor(
     private val repo: Repository,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<WorkoutUIState>(WorkoutUIState.Loading)
+    private val _state = MutableStateFlow<WorkoutListLoadState>(WorkoutListLoadState.Loading)
     val state = _state.asStateFlow()
 
     init {
@@ -24,11 +24,11 @@ class ListWorkoutsViewModel @Inject constructor(
     }
 
     private fun fetchWorkouts() = viewModelScope.launch(Dispatchers.IO) {
-        _state.value = WorkoutUIState.Loading
+        _state.value = WorkoutListLoadState.Loading
         when (val result = repo.getWorkouts()) {
-            is LoadResult.Success -> _state.value = WorkoutUIState.Success(result.data)
-            is LoadResult.Error -> _state.value = WorkoutUIState.Error(result.error)
-            is LoadResult.Empty -> _state.value = WorkoutUIState.Empty
+            is LoadResult.Success -> _state.value = WorkoutListLoadState.Success(result.data)
+            is LoadResult.Error -> _state.value = WorkoutListLoadState.Error(result.error)
+            is LoadResult.Empty -> _state.value = WorkoutListLoadState.Empty
         }
     }
 }

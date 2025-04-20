@@ -3,32 +3,23 @@ package ru.kolsanovafit.workouts.ui.detail_workout.media_player
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.view.Surface
-import android.view.View
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class LifecycleMediaPlayer(
-    private val videoUri: String,
-    private var progressView: View? = null
-) : DefaultLifecycleObserver {
+class LifecycleMediaPlayer() : DefaultLifecycleObserver {
 
     private var mediaPlayer: MediaPlayer? = null
     private var surface: Surface? = null
     private var isPrepared = false
-
     private var resumePosition = 0
     private var wasPlaying = false
 
     private val _playerState = MutableStateFlow<PlayerState>(PlayerState.Initial)
     val playerState: StateFlow<PlayerState> = _playerState
 
-    fun setProgressView(view: View) {
-        progressView = view
-    }
-
-    fun initializePlayer() {
+    fun initializePlayer(link: String) {
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer().apply {
                 setAudioAttributes(
@@ -43,16 +34,12 @@ class LifecycleMediaPlayer(
                 }
                 setOnInfoListener { _, what, _ ->
                     if (what == MediaPlayer.MEDIA_INFO_BUFFERING_START) {
-                        progressView?.visibility = View.VISIBLE
                         _playerState.value = PlayerState.Buffering
-                    } else {
-                        progressView?.visibility = View.GONE
                     }
                     true
                 }
                 setOnPreparedListener {
                     isPrepared = true
-                    progressView?.visibility = View.GONE
                     start()
                     _playerState.value = PlayerState.Playing
                 }
@@ -60,7 +47,7 @@ class LifecycleMediaPlayer(
                     _playerState.value = PlayerState.Completed
                 }
                 try {
-                    setDataSource(videoUri)
+                    setDataSource(link)
                 } catch (e: Exception) {
                     _playerState.value = PlayerState.Error(-1, 0)
                     e.printStackTrace()
@@ -75,7 +62,6 @@ class LifecycleMediaPlayer(
 
         if (!isPrepared) {
             _playerState.value = PlayerState.Preparing
-            progressView?.visibility = View.VISIBLE
             mediaPlayer?.prepareAsync()
         } else {
             mediaPlayer?.seekTo(resumePosition)

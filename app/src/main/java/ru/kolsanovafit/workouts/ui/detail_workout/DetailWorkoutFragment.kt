@@ -25,11 +25,14 @@ class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
     private val viewModel: DetailWorkoutViewModel by viewModels<DetailWorkoutViewModel>()
     private val args: DetailWorkoutFragmentArgs by navArgs()
 
+    private var pendingLink: String? = null
+    private var pendingSurface: Surface? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentDetailWorkoutBinding.bind(view)
-        viewModel.initializePlayer(binding.progressBar)
         viewLifecycleOwner.lifecycle.addObserver(viewModel.mediaPlayer)
+        viewModel.loadVideoLink(args.id)
 
         binding.apply {
             tvTitle.text = args.title
@@ -42,10 +45,28 @@ class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
     }
 
     private fun observeViewModel() {
-        fragmentLifecycleScope(Lifecycle.State.STARTED) {
+        fragmentLifecycleScope(Lifecycle.State.RESUMED) {
             launch {
                 viewModel.mediaPlayer.playerState.collect { playerState ->
                     updateUI(playerState)
+                }
+            }
+            launch {
+                viewModel.state.collect { state ->
+                    when (state) {
+                        is DetailWorkoutLoadState.Success ->{
+                            val link = state.workout.link
+                            pendingLink = link
+                            pendingSurface?.let { surface ->
+                                viewModel.initializePlayer(link)
+                                viewModel.mediaPlayer.setVideoSurface(surface)
+                                pendingLink = null
+                            }
+                        }
+                        else-> Unit
+
+                    }
+
                 }
             }
         }
@@ -56,11 +77,14 @@ class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
         val isActive = state is PlayerState.Playing
                 || state is PlayerState.Paused
                 || state is PlayerState.Completed
+        val isBuffering = state is PlayerState.Buffering
+                || state is PlayerState.Preparing
 
         flVideoContainer.isVisible = !isError
         tvError.isVisible = isError
         btnPlayPause.isVisible = isActive
         btnReplay.isVisible = isActive
+        progressBar.isVisible = isBuffering
 
         when (state) {
             is PlayerState.Error ->
@@ -89,7 +113,12 @@ class DetailWorkoutFragment : Fragment(R.layout.fragment_detail_workout) {
         binding.textureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
             override fun onSurfaceTextureAvailable(st: SurfaceTexture, width: Int, height: Int) {
                 val surface = Surface(st)
-                viewModel.mediaPlayer.setVideoSurface(surface)
+                pendingSurface = surface
+                pendingLink?.let { link ->
+                    viewModel.initializePlayer(link)
+                    viewModel.mediaPlayer.setVideoSurface(surface)
+                    pendingLink = null
+                }
             }
 
             override fun onSurfaceTextureSizeChanged(st: SurfaceTexture, w: Int, h: Int) = Unit
